@@ -1,10 +1,10 @@
 import win32file
 from gui.main_window import MainWindow
+from configparser import ConfigParser
 from utils.hardware import MyComputer
 from utils.pipe import connect_pipe
 from PySimpleGUI import theme
 from sys import argv
-from configparser import ConfigParser
 
 if __name__ == "__main__":
     config = ConfigParser()

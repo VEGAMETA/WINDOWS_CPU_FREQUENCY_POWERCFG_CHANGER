@@ -76,10 +76,9 @@ class MainWindow(sg.Window):
     def update_temperature(self, computer):
         while True:
             time.sleep(1)
-            if self.visible:
-                self.set_cpu_and_gpu_temperature(computer)
-                self.tray.set_tooltip(self.get_tray_text())
-                self.text.update(self.get_updated_text())
+            self.set_cpu_and_gpu_temperature(computer)
+            self.tray.set_tooltip(self.get_tray_text())
+            self.text.update(self.get_updated_text())
 
     def set_cpu_and_gpu_temperature(self, computer):
         self.cpu_temperature = "CPU - " + computer.get_cpu_temperature() + "°C"
