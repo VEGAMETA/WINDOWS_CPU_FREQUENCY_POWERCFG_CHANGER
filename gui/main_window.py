@@ -10,7 +10,7 @@ from utils.pipe import create_pipe
 class MainWindow(sg.Window):
     def __init__(self, computer, frequency, pipe_name, config):
         threading.Thread(target=create_pipe, args=(pipe_name, self), daemon=True).start()
-        
+
         self.computer = computer
         self.frequency = self.get_frequency(frequency)
         self.set_cpu_and_gpu_temperature(computer)
@@ -19,24 +19,24 @@ class MainWindow(sg.Window):
         self.text = sg.Text(self.get_updated_text())
 
         super().__init__(
-            config.get("Advanced", "name"), 
-            [[self.slider], [set_button, self.text]], 
-            icon=config.get("Advanced", "logo"), 
-            alpha_channel=float(config.get("Appearance", "Transparency")), 
-            grab_anywhere=True, 
+            config.get("Advanced", "name"),
+            [[self.slider], [set_button, self.text]],
+            icon=config.get("Advanced", "logo"),
+            alpha_channel=float(config.get("Appearance", "Transparency")),
+            grab_anywhere=True,
             enable_close_attempted_event=True
         )
-        
+
         fast_set_list = config.get("CPU", "fast_set_list").split(", ")
         tray_menu = ['', ['Open', "Set", fast_set_list, '---', 'Exit']]
         self.tray = SystemTray(
-            tray_menu, 
-            single_click_events=False, 
-            window=self, 
-            tooltip=self.get_tray_text(), 
+            tray_menu,
+            single_click_events=False,
+            window=self,
+            tooltip=self.get_tray_text(),
             icon=config.get("Advanced", "logo_tray")
         )
-        
+
         threading.Thread(target=self.update_temperature, args=(computer,), daemon=True).start()
         self.visible = True
         self.event_loop()
@@ -51,7 +51,7 @@ class MainWindow(sg.Window):
             elif event == sg.WIN_CLOSE_ATTEMPTED_EVENT:
                 self.hide()
                 self.visible = False
-            elif event == 'Open': 
+            elif event == 'Open':
                 self.un_hide()
                 self.bring_to_front()
                 self.visible = True
@@ -103,6 +103,6 @@ class MainWindow(sg.Window):
 
     def get_updated_text(self):
         return f"Current Frequency is {self.frequency} MHz\t{self.cpu_temperature}\t{self.gpu_temperature}"
-    
+
     def get_tray_text(self):
         return f"{self.frequency} MHz {self.cpu_temperature} {self.gpu_temperature}"
