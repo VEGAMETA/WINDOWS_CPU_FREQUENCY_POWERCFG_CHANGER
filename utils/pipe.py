@@ -19,4 +19,3 @@ def connect_pipe(pipe_name):
         win32file.CreateFile(pipe_name, win32file.GENERIC_READ, 0, None, win32file.OPEN_EXISTING, 0, None)
         kill(getpid(), SIGINT)
     except pywintypes.error: ...
-    
