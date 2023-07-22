@@ -1,7 +1,8 @@
-from configparser import ConfigParser
 from utils.hardware import MyComputer
+from configparser import ConfigParser
 from gui.window import MainWindow
 from PySimpleGUI import theme
+import utils.frequency as freq
 import utils.pipe as pipe
 import sys
 
@@ -13,7 +14,7 @@ if __name__ == "__main__":
     pipe.kill_if_exists(pipe_name)
 
     my_computer = MyComputer()
-    frequency = sys.argv[1] if len(sys.argv) > 1 else ""
+    frequency = int(sys.argv[1], 16) if len(sys.argv) > 1 else freq.get_frequency()
 
     hidden = bool(sys.argv[2]) if len(sys.argv) > 2 else False
 

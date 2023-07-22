@@ -1,9 +1,9 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-import os
+import pywintypes
 import win32pipe
 import win32file
-import pywintypes
+import os
 
 if TYPE_CHECKING:
     from gui.window import MainWindow

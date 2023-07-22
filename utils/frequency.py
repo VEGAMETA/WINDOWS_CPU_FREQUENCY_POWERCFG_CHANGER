@@ -10,10 +10,8 @@ def set_frequency(value: int) -> None:
     subprocess.run(" && ".join(commands), shell=True)
 
 
-def get_frequency(value: str = "") -> int:
-    if not value:
-        value = subprocess.Popen(
-            'powercfg /query SCHEME_CURRENT SUB_PROCESSOR PROCFREQMAX',
-            stdout=subprocess.PIPE
-        ).stdout.read()[-12:-4]
-    return int(value, 16)
+def get_frequency() -> int:
+    return int(subprocess.Popen(
+        'powercfg /query SCHEME_CURRENT SUB_PROCESSOR PROCFREQMAX',
+        stdout=subprocess.PIPE
+    ).stdout.read()[-12:-4], 16)
