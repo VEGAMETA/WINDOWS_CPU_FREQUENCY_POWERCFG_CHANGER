@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from gui.tray import Tray
 import utils.pipe as pipe
 import utils.frequency as freq
-import PySimpleGUI as psg
+import PySimpleGUI as Psg
 import threading
 import time
 import sys
@@ -13,9 +13,9 @@ if TYPE_CHECKING:
     from utils.hardware import MyComputer
 
 
-class MainWindow(psg.Window):
+class MainWindow(Psg.Window):
     def __init__(self, computer: MyComputer, frequency: int,
-                 pipe_name: str, config: ConfigParser, hidden: bool):
+                 pipe_name: str, config: ConfigParser, hidden: bool) -> None:
         threading.Thread(target=pipe.create_pipe,
                          args=(pipe_name, self),
                          daemon=True
@@ -29,12 +29,15 @@ class MainWindow(psg.Window):
         self.gpu_temperature = self.computer.get_str_gpu_temperature()
 
         self.slider = self.get_slider()
-        self.set_button = self.get_button()
-        self.text = psg.Text(self.get_updated_text())
+        self.text = Psg.Text(self.get_updated_text())
+        set_button = Psg.Button('Set', button_color=(
+            Psg.theme_element_text_color(),
+            Psg.theme_background_color()
+        ))
 
         super().__init__(
             self.config.get("Advanced", "name"),
-            [[self.slider], [self.set_button, self.text]],
+            [[self.slider], [set_button, self.text]],
             icon=self.config.get("Advanced", "logo"),
             alpha_channel=float(self.config.get("Appearance", "Transparency")),
             grab_anywhere=True,
@@ -52,43 +55,44 @@ class MainWindow(psg.Window):
         self.tray.close()
         self.close()
 
-    def event_loop(self):
+    def event_loop(self) -> None:
         while True:
             event, values = self.read()
-            if event == self.tray.key: event = values[event]
+            if event == self.tray.key:
+                event = values[event]
             if event in (None, 'Exit'):
                 sys.exit(0)
-            elif event == psg.WIN_CLOSE_ATTEMPTED_EVENT:
+            elif event == Psg.WIN_CLOSE_ATTEMPTED_EVENT:
                 self.hide()
             elif event == 'Open':
                 self.show_window()
-            elif event == psg.EVENT_SYSTEM_TRAY_ICON_DOUBLE_CLICKED:
+            elif event == Psg.EVENT_SYSTEM_TRAY_ICON_DOUBLE_CLICKED:
                 self.hide() if self.TKroot.winfo_viewable() else self.un_hide()
             elif event.isdigit():
                 self.update_frequency(int(values['-TRAY-']))
             else:
                 self.update_frequency(int(values["slider"]))
 
-    def show_window(self):
+    def show_window(self) -> None:
         self.bring_to_front()
         self.un_hide()
 
-    def get_tray_text(self):
+    def get_tray_text(self) -> str:
         return f"{self.frequency} MHz " \
                f"{self.cpu_temperature} {self.gpu_temperature}"
 
-    def get_updated_text(self):
+    def get_updated_text(self) -> str:
         return f"Current Frequency is {self.frequency} MHz" \
                f"\t{self.cpu_temperature}\t{self.gpu_temperature}"
 
-    def update_frequency(self, value):
+    def update_frequency(self, value: int) -> None:
         self.frequency = value
         self.slider.update(value=value)
         freq.set_frequency(value)
         self.tray.set_tooltip(self.get_tray_text())
         self.text.update(self.get_updated_text())
 
-    def update_temperature(self):
+    def update_temperature(self) -> None:
         while True:
             time.sleep(1)
             self.cpu_temperature = self.computer.get_str_cpu_temperature()
@@ -96,16 +100,12 @@ class MainWindow(psg.Window):
             self.tray.set_tooltip(self.get_tray_text())
             self.text.update(self.get_updated_text())
 
-    def get_slider(self):
+    def get_slider(self) -> Psg.Slider:
         max_frequency = int(self.config.get("CPU", "max_frequency"))
         min_frequency = int(self.config.get("CPU", "min_frequency"))
         slider_step = int(self.config.get("CPU", "slider_step"))
         slider_text_step = int(self.config.get("CPU", "slider_text_step"))
-        return psg.Slider((min_frequency, max_frequency), self.frequency,
+        return Psg.Slider((min_frequency, max_frequency), self.frequency,
                           slider_step, slider_text_step, "h", size=(50, 10),
                           key="slider"
                           )
-
-    def get_button(self):
-        return psg.Button('Set', button_color=(psg.theme_element_text_color(),
-                                               psg.theme_background_color()))
