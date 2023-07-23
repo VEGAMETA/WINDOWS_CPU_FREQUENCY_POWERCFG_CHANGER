@@ -15,6 +15,7 @@ def main() -> None:
     pipe.kill_if_exists(pipe_name)
 
     my_computer: MyComputer = MyComputer()
+
     frequency: int = freq.get_frequency()
     hidden: bool = True if len(sys.argv) > 1 and sys.argv[1] == "-h" else False
 

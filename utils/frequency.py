@@ -7,11 +7,11 @@ def un_hide_frequency() -> None:
 
 
 def set_frequency(value: int) -> None:
-    commands: str = \
+    command: str = \
         f"powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCFREQMAX {value} && " \
         f"powercfg /setdcvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCFREQMAX {value} && " \
         "powercfg /S SCHEME_CURRENT"
-    subprocess.run(commands, shell=True)
+    subprocess.run(command, shell=True)
 
 
 def get_frequency() -> int:
