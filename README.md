@@ -1,10 +1,11 @@
 # WINDOWS_CPU_FREQUENCY_POWERCFG_CHANGER
-![img](https://github.com/VEGAMETA/WINDOWS_CPU_FREQUENCY_POWERCFG_CHANGER/assets/100537523/e65d4541-b952-4d83-92e7-ffedbbb9bc95)
 ### A tool for limiting max CPU frequency in Windows by changing powercfg settings
 - Useful for laptops
 - Prevents power overuse
 - Prevents overheating during the routine use or downtime
 - Full max CPU frequency control
+
+![img](https://github.com/VEGAMETA/WINDOWS_CPU_FREQUENCY_POWERCFG_CHANGER/assets/100537523/e65d4541-b952-4d83-92e7-ffedbbb9bc95)
 
 ## Installation
 Default installation:
