@@ -4,8 +4,8 @@ from gui.window import MainWindow
 from PySimpleGUI import theme
 import utils.frequency as freq
 import utils.pipe as pipe
+import pyuac
 import sys
-
 
 def main() -> None:
     config: ConfigParser = ConfigParser()
@@ -25,6 +25,10 @@ def main() -> None:
 
 if __name__ == "__main__":
     try:
-        main()
+        if not pyuac.isUserAdmin():
+            print("Re-launching as admin!")
+            pyuac.runAsAdmin()
+        else:
+            main()
     except:
         pass
