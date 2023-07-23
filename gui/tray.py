@@ -8,8 +8,8 @@ if TYPE_CHECKING:
 
 class Tray(SystemTray):
     def __init__(self, window: MainWindow) -> None:
-        fast_set_list = window.config.get("CPU", "fast_set_list").split(", ")
-        tray_menu = ['', ['Open', "Set", fast_set_list, '---', 'Exit']]
+        fast_set_list: list = window.config.get("CPU", "fast_set_list").split(", ")
+        tray_menu: list = ['', ['Open', "Set", fast_set_list, '---', 'Exit']]
         super().__init__(
             tray_menu,
             single_click_events=False,

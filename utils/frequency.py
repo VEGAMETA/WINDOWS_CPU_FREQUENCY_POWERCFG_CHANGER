@@ -2,12 +2,12 @@ import subprocess
 
 
 def set_frequency(value: int) -> None:
-    commands = (
-        f"powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCFREQMAX {value}",
-        f"powercfg /setdcvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCFREQMAX {value}",
+    commands: str = \
+        f"powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCFREQMAX {value} && " \
+        f"powercfg /setdcvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCFREQMAX {value} && " \
         "powercfg /S SCHEME_CURRENT"
-    )
-    subprocess.run(" && ".join(commands), shell=True)
+
+    subprocess.run(commands, shell=True)
 
 
 def get_frequency() -> int:

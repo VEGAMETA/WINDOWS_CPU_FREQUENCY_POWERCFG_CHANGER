@@ -21,16 +21,16 @@ class MainWindow(Psg.Window):
                          daemon=True
                          ).start()
 
-        self.frequency = frequency
-        self.config = config
+        self.frequency: int = frequency
+        self.config: ConfigParser = config
 
-        self.computer = computer
-        self.cpu_temperature = self.computer.get_str_cpu_temperature()
-        self.gpu_temperature = self.computer.get_str_gpu_temperature()
+        self.computer: MyComputer = computer
+        self.cpu_temperature: str = self.computer.get_str_cpu_temperature()
+        self.gpu_temperature: str = self.computer.get_str_gpu_temperature()
 
-        self.slider = self.get_slider()
-        self.text = Psg.Text(self.get_updated_text())
-        set_button = Psg.Button('Set', button_color=(
+        self.slider: Psg.Slider = self.get_slider()
+        self.text: Psg.Text = Psg.Text(self.get_updated_text())
+        set_button: Psg.Button = Psg.Button('Set', button_color=(
             Psg.theme_element_text_color(),
             Psg.theme_background_color()
         ))
@@ -50,7 +50,7 @@ class MainWindow(Psg.Window):
 
         threading.Thread(target=self.update_temperature, daemon=True).start()
 
-        self.tray = Tray(self)
+        self.tray: Tray = Tray(self)
         self.event_loop()
         self.tray.close()
         self.close()
@@ -67,7 +67,7 @@ class MainWindow(Psg.Window):
             elif event == 'Open':
                 self.show_window()
             elif event == Psg.EVENT_SYSTEM_TRAY_ICON_DOUBLE_CLICKED:
-                self.hide() if self.TKroot.winfo_viewable() else self.un_hide()
+                self.hide() if self.TKroot.winfo_viewable() else self.show_window()
             elif event.isdigit():
                 self.update_frequency(int(values['-TRAY-']))
             else:
@@ -76,6 +76,7 @@ class MainWindow(Psg.Window):
     def show_window(self) -> None:
         self.bring_to_front()
         self.un_hide()
+        self.TKroot.deiconify()
 
     def get_tray_text(self) -> str:
         return f"{self.frequency} MHz " \
@@ -101,10 +102,10 @@ class MainWindow(Psg.Window):
             self.text.update(self.get_updated_text())
 
     def get_slider(self) -> Psg.Slider:
-        max_frequency = int(self.config.get("CPU", "max_frequency"))
-        min_frequency = int(self.config.get("CPU", "min_frequency"))
-        slider_step = int(self.config.get("CPU", "slider_step"))
-        slider_text_step = int(self.config.get("CPU", "slider_text_step"))
+        max_frequency: int = int(self.config.get("CPU", "max_frequency"))
+        min_frequency: int = int(self.config.get("CPU", "min_frequency"))
+        slider_step: int = int(self.config.get("CPU", "slider_step"))
+        slider_text_step: int = int(self.config.get("CPU", "slider_text_step"))
         return Psg.Slider((min_frequency, max_frequency), self.frequency,
                           slider_step, slider_text_step, "h", size=(50, 10),
                           key="slider"
