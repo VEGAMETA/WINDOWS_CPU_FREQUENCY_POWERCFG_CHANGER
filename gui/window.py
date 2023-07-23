@@ -21,10 +21,10 @@ class MainWindow(Psg.Window):
                          daemon=True
                          ).start()
 
-        self.frequency: int = frequency
         self.config: ConfigParser = config
-
         self.computer: MyComputer = computer
+        self.frequency: int = frequency
+
         self.cpu_temperature: str = self.computer.get_str_cpu_temperature()
         self.gpu_temperature: str = self.computer.get_str_gpu_temperature()
 
