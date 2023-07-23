@@ -24,7 +24,8 @@ class MyComputer(Computer):
                     if sensor.SensorType == SensorType.Temperature and "GPU Core" in sensor.Name:
                         self.gpu_sensor = sensor
                         break
-
+            hardware.Update()
+            
     def get_cpu_temperature(self) -> str:
         temperature: str = str(self.cpu_sensor.get_Value())[:-2]
         self.Hardware[0].Update()
