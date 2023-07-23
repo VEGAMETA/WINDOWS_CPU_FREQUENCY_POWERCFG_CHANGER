@@ -26,7 +26,7 @@ To run the script you can use (and modify as you want) `freq.bat` or run by comm
 ```
 or
 ```bat
-    .\freq
+.\freq
 ```
 
 ## Config
