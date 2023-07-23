@@ -47,7 +47,7 @@ To change frequency manually in windows power settings you must unhide
 `PROCFREQMAX` 
 attribute by running following command (if you ran the script it runs 
 automatically (if an attribute was hidden))
-```
+```bat
 powercfg -attributes SUB_PROCESSOR PROCFREQMAX -ATTRIB_HIDE
 ```
 ###
