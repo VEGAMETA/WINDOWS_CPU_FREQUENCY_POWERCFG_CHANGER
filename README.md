@@ -65,5 +65,17 @@ powercfg -attributes SUB_PROCESSOR PROCFREQMAX -ATTRIB_HIDE
 
 ###
 
+## Uninstalling
+
+Firstly you must exit the program from system tray menu, then enter following command:
+
+```bat
+sc stop WinRing0_1_2_0
+```
+
+This command stops the service, so you can delete OpenHardwareMonitorLib.sys file
+
+#
+
 ###### Use at your own risk, the programmer is not responsible
 
