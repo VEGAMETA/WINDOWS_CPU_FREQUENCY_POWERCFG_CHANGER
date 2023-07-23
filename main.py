@@ -6,7 +6,8 @@ import utils.frequency as freq
 import utils.pipe as pipe
 import sys
 
-if __name__ == "__main__":
+
+def main() -> None:
     config: ConfigParser = ConfigParser()
     config.read("config.ini")
 
@@ -14,9 +15,15 @@ if __name__ == "__main__":
     pipe.kill_if_exists(pipe_name)
 
     my_computer: MyComputer = MyComputer()
-    frequency: int = int(sys.argv[1], 16) if len(sys.argv) > 1 else freq.get_frequency()
-
-    hidden: bool = bool(sys.argv[2]) if len(sys.argv) > 2 else False
+    frequency: int = freq.get_frequency()
+    hidden: bool = True if len(sys.argv) > 1 and sys.argv[1] == "-h" else False
 
     theme(config.get("Appearance", "Theme"))
-    window: MainWindow = MainWindow(my_computer, frequency, pipe_name, config, hidden)
+    MainWindow(config, pipe_name, my_computer, frequency, hidden)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except:
+        pass

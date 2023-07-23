@@ -1,6 +1,6 @@
 import clr
 
-clr.AddReference(r'OpenHardwareMonitorLib')
+clr.AddReference(r'OpenHardwareMonitor/OpenHardwareMonitorLib')
 from OpenHardwareMonitor.Hardware import Computer
 
 

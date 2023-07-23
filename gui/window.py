@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 
 class MainWindow(Psg.Window):
-    def __init__(self, computer: MyComputer, frequency: int,
-                 pipe_name: str, config: ConfigParser, hidden: bool) -> None:
+    def __init__(self, config: ConfigParser, pipe_name: str,
+                 computer: MyComputer, frequency: int, hidden: bool) -> None:
         threading.Thread(target=pipe.create_pipe,
                          args=(pipe_name, self),
                          daemon=True
