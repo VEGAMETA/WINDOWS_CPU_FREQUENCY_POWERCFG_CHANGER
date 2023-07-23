@@ -24,9 +24,11 @@ To run the script you can use (and modify as you want) `freq.bat` or run by comm
 ```bat
 .\venv\Scripts\pythonw .\main.py
 ```
+or
+```bat
+    .\freq
 ```
-.\freq
-```
+
 ## Config
 Check `config.ini` and read the comments
 ###
