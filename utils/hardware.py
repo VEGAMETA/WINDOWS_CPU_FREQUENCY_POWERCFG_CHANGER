@@ -1,7 +1,7 @@
 import clr
 
 clr.AddReference(r'OpenHardwareMonitor/OpenHardwareMonitorLib')
-from OpenHardwareMonitor.Hardware import Computer
+from OpenHardwareMonitor.Hardware import Computer, HardwareType, SensorType
 
 
 class MyComputer(Computer):
@@ -10,30 +10,28 @@ class MyComputer(Computer):
         self.CPUEnabled = True
         self.GPUEnabled = True
         self.Open()
-        self.cpu_index: int = self.get_cpu_index()
-        self.gpu_index: int = self.get_gpu_index()
+        self.get_sensors()
 
-    def get_cpu_index(self) -> int:
-        last_index: int = 0
-        for index in range(0, len(self.Hardware[0].Sensors)):
-            if "/temperature" in str(self.Hardware[0].Sensors[index].Identifier):
-                last_index = index
-        return last_index
-
-    def get_gpu_index(self) -> int:
-        last_index: int = 0
-        for index in range(0, len(self.Hardware[1].Sensors)):
-            if "/temperature" in str(self.Hardware[1].Sensors[index].Identifier):
-                last_index = index
-        return last_index
+    def get_sensors(self) -> None:
+        for hardware in self.Hardware:
+            if hardware.HardwareType == HardwareType.CPU:
+                for sensor in hardware.Sensors:
+                    if sensor.SensorType == SensorType.Temperature and "CPU Package" in sensor.Name:
+                        self.cpu_sensor = sensor
+                        break
+            if hardware.HardwareType in (HardwareType.GpuAti, HardwareType.GpuNvidia):
+                for sensor in hardware.Sensors:
+                    if sensor.SensorType == SensorType.Temperature and "GPU Core" in sensor.Name:
+                        self.gpu_sensor = sensor
+                        break
 
     def get_cpu_temperature(self) -> str:
-        temperature: str = str(self.Hardware[0].Sensors[self.cpu_index].get_Value())[:-2]
+        temperature: str = str(self.cpu_sensor.get_Value())[:-2]
         self.Hardware[0].Update()
         return temperature
 
     def get_gpu_temperature(self) -> str:
-        temperature: str = str(self.Hardware[1].Sensors[self.gpu_index].get_Value())[:-2]
+        temperature: str = str(self.gpu_sensor.get_Value())[:-2]
         self.Hardware[1].Update()
         return temperature
 
