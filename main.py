@@ -7,6 +7,7 @@ import utils.pipe as pipe
 import pyuac
 import sys
 
+
 def main() -> None:
     config: ConfigParser = ConfigParser()
     config.read("config.ini")
@@ -22,13 +23,16 @@ def main() -> None:
     theme(config.get("Appearance", "Theme"))
     MainWindow(config, pipe_name, my_computer, frequency, hidden)
 
+
 def debug() -> None:
     main()
+    sys.exit(0)
+
 
 if __name__ == "__main__":
     if "-d" in sys.argv:
-        main()
-        sys.exit(0)
+        debug()
+        
     try:
         if not pyuac.isUserAdmin():
             print("Re-launching as admin!")
