@@ -17,13 +17,18 @@ def main() -> None:
     my_computer: MyComputer = MyComputer()
 
     frequency: int = freq.get_frequency()
-    hidden: bool = True if len(sys.argv) > 1 and sys.argv[1] == "-h" else False
+    hidden: bool = True if "-h" in sys.argv else False
 
     theme(config.get("Appearance", "Theme"))
     MainWindow(config, pipe_name, my_computer, frequency, hidden)
 
+def debug() -> None:
+    main()
 
 if __name__ == "__main__":
+    if "-d" in sys.argv:
+        main()
+        sys.exit(0)
     try:
         if not pyuac.isUserAdmin():
             print("Re-launching as admin!")
