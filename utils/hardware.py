@@ -10,10 +10,13 @@ class MyComputer(Computer):
         self.CPUEnabled = True
         self.GPUEnabled = True
         self.Open()
+        self.cpu_sensor = None
+        self.gpu_sensor = None
         self.get_sensors()
 
     def get_sensors(self) -> None:
         for hardware in self.Hardware:
+            hardware.Update()
             if hardware.HardwareType == HardwareType.CPU:
                 for sensor in hardware.Sensors:
                     if sensor.SensorType == SensorType.Temperature and "CPU Package" in sensor.Name:
@@ -24,7 +27,6 @@ class MyComputer(Computer):
                     if sensor.SensorType == SensorType.Temperature and "GPU Core" in sensor.Name:
                         self.gpu_sensor = sensor
                         break
-            hardware.Update()
             
     def get_cpu_temperature(self) -> str:
         temperature: str = str(self.cpu_sensor.get_Value())[:-2]
