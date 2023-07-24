@@ -27,7 +27,7 @@ class MyComputer(Computer):
                     if sensor.SensorType == SensorType.Temperature and "GPU Core" in sensor.Name:
                         self.gpu_sensor = sensor
                         break
-            
+
     def get_cpu_temperature(self) -> str:
         temperature: str = str(self.cpu_sensor.get_Value())[:-2]
         self.Hardware[0].Update()
@@ -39,7 +39,11 @@ class MyComputer(Computer):
         return temperature
 
     def get_str_gpu_temperature(self) -> str:
-        return "GPU - " + self.get_gpu_temperature() + "°C"
+        if self.gpu_sensor:
+            return "GPU - " + self.get_gpu_temperature() + "°C"
+        return "GPU - IGP"
 
     def get_str_cpu_temperature(self) -> str:
-        return "CPU - " + self.get_cpu_temperature() + "°C"
+        if self.cpu_sensor:
+            return "CPU - " + self.get_cpu_temperature() + "°C"
+        return "CPU - None(?)"
