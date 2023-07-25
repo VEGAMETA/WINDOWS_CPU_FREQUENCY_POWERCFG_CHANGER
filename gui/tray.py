@@ -9,11 +9,10 @@ if TYPE_CHECKING:
 class Tray(SystemTray):
     def __init__(self, window: MainWindow) -> None:
         fast_set_list: list = window.config.get("CPU", "fast_set_list").split(", ")
-        tray_menu: list = ['', ['Open', "Set", fast_set_list, '---', 'Exit']]
         super().__init__(
-            tray_menu,
-            single_click_events=False,
-            window=window,
-            tooltip=window.get_tray_text(),
-            icon=window.config.get("Advanced", "logo_tray")
+            ['', ['Show', "Set", fast_set_list, '---', 'Exit']],
+            window.config.get("Advanced", "logo_tray"),
+            window.get_tray_tooltip(),
+            False,
+            window
         )

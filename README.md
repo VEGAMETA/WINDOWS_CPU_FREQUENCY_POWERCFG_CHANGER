@@ -9,6 +9,13 @@
 
 ![img](https://github.com/VEGAMETA/WINDOWS_CPU_FREQUENCY_POWERCFG_CHANGER/assets/100537523/e65d4541-b952-4d83-92e7-ffedbbb9bc95)
 
+## Requirements
+
+- Windows
+- Python >= 3.8
+- Git (optional)
+- Admin rights accessible
+
 ## Installation
 
 Default installation:
@@ -61,6 +68,14 @@ automatically (if an attribute was hidden))
 
 ```bat
 powercfg -attributes SUB_PROCESSOR PROCFREQMAX -ATTRIB_HIDE
+```
+
+###
+
+Make sure that script execution is enabled if you activate the venv in powershell
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
 ###

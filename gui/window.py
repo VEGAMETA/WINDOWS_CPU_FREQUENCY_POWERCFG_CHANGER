@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 from gui.tray import Tray
 import utils.pipe as pipe
 import utils.frequency as freq
+import utils.wrappers as wrappers
 import PySimpleGUI as Psg
 import threading
 import time
-import sys
 
 if TYPE_CHECKING:
     from configparser import ConfigParser
@@ -14,9 +14,12 @@ if TYPE_CHECKING:
 
 
 class MainWindow(Psg.Window):
-    def __init__(self, config: ConfigParser, pipe_name: str,
-                 computer: MyComputer, frequency: int, hidden: bool) -> None:
-        threading.Thread(target=pipe.create_pipe,
+    def __init__(self, config: ConfigParser, pipe_name: str, computer: MyComputer,
+                 frequency: int, hidden: bool, debug: bool) -> None:
+
+        threading.Thread(target=
+                         pipe.create_pipe if debug else
+                         wrappers.no_debug(pipe.create_pipe),
                          args=(pipe_name, self),
                          daemon=True
                          ).start()
@@ -41,14 +44,18 @@ class MainWindow(Psg.Window):
             icon=self.config.get("Advanced", "logo"),
             alpha_channel=float(self.config.get("Appearance", "Transparency")),
             grab_anywhere=True,
-            enable_close_attempted_event=True,
             finalize=hidden,
+            enable_close_attempted_event=True,
         )
 
         if hidden:
             self.hide()
 
-        threading.Thread(target=self.update_temperature, daemon=True).start()
+        threading.Thread(target=
+                         self.update_temperature if debug else
+                         wrappers.no_debug(self.update_temperature),
+                         daemon=True
+                         ).start()
 
         self.tray: Tray = Tray(self)
         self.event_loop()
@@ -61,10 +68,10 @@ class MainWindow(Psg.Window):
             if event == self.tray.key:
                 event = values[event]
             if event in (None, 'Exit'):
-                sys.exit(0)
+                break
             elif event == Psg.WIN_CLOSE_ATTEMPTED_EVENT:
                 self.hide()
-            elif event == 'Open':
+            elif event == 'Show':
                 self.show_window()
             elif event == Psg.EVENT_SYSTEM_TRAY_ICON_DOUBLE_CLICKED:
                 self.hide() if self.TKroot.winfo_viewable() else self.show_window()
@@ -78,7 +85,7 @@ class MainWindow(Psg.Window):
         self.un_hide()
         self.TKroot.deiconify()
 
-    def get_tray_text(self) -> str:
+    def get_tray_tooltip(self) -> str:
         return f"{self.frequency} MHz " \
                f"{self.cpu_temperature} {self.gpu_temperature}"
 
@@ -88,9 +95,9 @@ class MainWindow(Psg.Window):
 
     def update_frequency(self, value: int) -> None:
         self.frequency = value
-        self.slider.update(value=value)
+        self.slider.update(value)
         freq.set_frequency(value)
-        self.tray.set_tooltip(self.get_tray_text())
+        self.tray.set_tooltip(self.get_tray_tooltip())
         self.text.update(self.get_updated_text())
 
     def update_temperature(self) -> None:
@@ -98,7 +105,7 @@ class MainWindow(Psg.Window):
             time.sleep(1)
             self.cpu_temperature = self.computer.get_str_cpu_temperature()
             self.gpu_temperature = self.computer.get_str_gpu_temperature()
-            self.tray.set_tooltip(self.get_tray_text())
+            self.tray.set_tooltip(self.get_tray_tooltip())
             self.text.update(self.get_updated_text())
 
     def get_slider(self) -> Psg.Slider:

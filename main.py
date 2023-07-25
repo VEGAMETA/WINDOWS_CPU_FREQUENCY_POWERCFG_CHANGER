@@ -2,6 +2,7 @@ from utils.hardware import MyComputer
 from configparser import ConfigParser
 from gui.window import MainWindow
 from PySimpleGUI import theme
+import utils.wrappers as wrappers
 import utils.frequency as freq
 import utils.pipe as pipe
 import pyuac
@@ -19,25 +20,18 @@ def main() -> None:
 
     frequency: int = freq.get_frequency()
     hidden: bool = "-h" in sys.argv
+    debug: bool = "-d" in sys.argv
 
     theme(config.get("Appearance", "Theme"))
-    MainWindow(config, pipe_name, my_computer, frequency, hidden)
+    MainWindow(config, pipe_name, my_computer, frequency, hidden, debug)
 
 
-def debug() -> None:
-    main()
-    sys.exit(0)
+def check_uac():
+    if not pyuac.isUserAdmin():
+        pyuac.runAsAdmin()
+    else:
+        main() if "-d" in sys.argv else wrappers.no_debug(main)()
 
 
 if __name__ == "__main__":
-    if "-d" in sys.argv:
-        debug()
-
-    try:
-        if not pyuac.isUserAdmin():
-            print("Re-launching as admin!")
-            pyuac.runAsAdmin()
-        else:
-            main()
-    except:
-        pass
+    check_uac()
