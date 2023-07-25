@@ -56,9 +56,6 @@ If you want to run the script hidden in system tray from a start run:
 freq.bat -h
 ```
 
-You can autorun the script by creating `freq.bat` task in the windows task scheduler
-adding the `-h` argument if you want to run hidden in a system tray as well
-
 ###
 
 To change frequency manually in windows power settings you must unhide
