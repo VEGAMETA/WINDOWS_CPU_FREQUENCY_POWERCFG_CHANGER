@@ -13,8 +13,6 @@ class Component:
         self.temperature_sensor = temperature_sensor
 
     def set_temperature_sensor(self) -> None:
-        if not hasattr(self.hardware, "Sensors"):
-            return None
         for sensor in self.hardware.Sensors:
             if sensor.SensorType == SensorType.Temperature and sensor.Name in temperature_sensors_names:
                 self.temperature_sensor = sensor
@@ -42,9 +40,12 @@ class MyComputer(Computer):
     def _set_components_hardware(self) -> None:
         for hardware in self.Hardware:
             hardware.Update()
-            self._cpu_component.hardware = hardware if hardware.HardwareType == HardwareType.CPU else ...
-            self._gpu_component.hardware = hardware if hardware.HardwareType in (HardwareType.GpuAti,
-                                                                                 HardwareType.GpuNvidia) else ...
+            if hasattr(hardware, "Sensors"):
+                if hardware.HardwareType == HardwareType.CPU:
+                    self._cpu_component.hardware = hardware
+                    continue
+                if hardware.HardwareType in (HardwareType.GpuAti, HardwareType.GpuNvidia):
+                    self._gpu_component.hardware = hardware
 
     def _set_components_temperature_sensors(self) -> None:
         self._cpu_component.set_temperature_sensor() if self._cpu_component.hardware else ...
