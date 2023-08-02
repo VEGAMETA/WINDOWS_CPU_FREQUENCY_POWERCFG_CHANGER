@@ -13,6 +13,8 @@ class Component:
         self.temperature_sensor = temperature_sensor
 
     def set_temperature_sensor(self) -> None:
+        if not hasattr(self.hardware, "Sensors"):
+            return None
         for sensor in self.hardware.Sensors:
             if sensor.SensorType == SensorType.Temperature and sensor.Name in temperature_sensors_names:
                 self.temperature_sensor = sensor
