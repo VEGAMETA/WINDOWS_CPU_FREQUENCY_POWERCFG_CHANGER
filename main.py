@@ -1,11 +1,11 @@
 import utils.wrappers as wrappers
-from app import run
+import app
 import sys
 
 
 @wrappers.check_uac
 def main() -> None:
-    run() if "-d" in sys.argv else wrappers.no_debug(run)()
+    app.run() if "-d" in sys.argv else wrappers.no_debug(app.run)()
 
 
 if __name__ == "__main__":
