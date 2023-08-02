@@ -1,49 +1,61 @@
 import clr
+from utils.wrappers import singleton
 
 clr.AddReference(r'OpenHardwareMonitor/OpenHardwareMonitorLib')
 from OpenHardwareMonitor.Hardware import Computer, HardwareType, SensorType
 
+temperature_sensors_names = ("CPU Package", "GPU Core")
 
+
+class Component:
+    def __init__(self, hardware=None, temperature_sensor=None) -> None:
+        self._hardware = hardware
+        self._temperature_sensor = temperature_sensor
+
+    def set_hardware(self, hardware) -> None:
+        self._hardware = hardware
+
+    def get_hardware(self):
+        return self._hardware
+
+    def set_temperature_sensor(self) -> None:
+        for sensor in self._hardware.Sensors:
+            if sensor.SensorType == SensorType.Temperature and sensor.Name in temperature_sensors_names:
+                self._temperature_sensor = sensor
+                return None
+
+    def get_temperature(self) -> int:
+        self._hardware.Update()
+        return int(self._temperature_sensor.get_Value())
+
+
+@singleton
 class MyComputer(Computer):
     def __init__(self) -> None:
         super().__init__()
         self.CPUEnabled = True
         self.GPUEnabled = True
         self.Open()
-        self.cpu_sensor = None
-        self.gpu_sensor = None
-        self.get_sensors()
 
-    def get_sensors(self) -> None:
+        self._cpu_component = Component()
+        self._gpu_component = Component()
+
+        self._set_components_hardware()
+        self._set_components_temperature_sensors()
+
+    def _set_components_hardware(self) -> None:
         for hardware in self.Hardware:
             hardware.Update()
-            if hardware.HardwareType == HardwareType.CPU:
-                for sensor in hardware.Sensors:
-                    if sensor.SensorType == SensorType.Temperature and "CPU Package" in sensor.Name:
-                        self.cpu_sensor = sensor
-                        break
-            if hardware.HardwareType in (HardwareType.GpuAti, HardwareType.GpuNvidia):
-                for sensor in hardware.Sensors:
-                    if sensor.SensorType == SensorType.Temperature and "GPU Core" in sensor.Name:
-                        self.gpu_sensor = sensor
-                        break
+            self._cpu_component.set_hardware(hardware) if hardware.HardwareType == HardwareType.CPU else ...
+            self._gpu_component.set_hardware(hardware) if hardware.HardwareType in (HardwareType.GpuAti,
+                                                                                    HardwareType.GpuNvidia) else ...
+
+    def _set_components_temperature_sensors(self) -> None:
+        self._cpu_component.set_temperature_sensor() if self._cpu_component.get_hardware() else ...
+        self._gpu_component.set_temperature_sensor() if self._gpu_component.get_hardware() else ...
 
     def get_cpu_temperature(self) -> str:
-        temperature: str = str(self.cpu_sensor.get_Value())[:-2]
-        self.Hardware[0].Update()
-        return temperature
+        return f"CPU - {self._cpu_component.get_temperature()}°C" if self._cpu_component.get_hardware() else "CPU - ERR"
 
     def get_gpu_temperature(self) -> str:
-        temperature: str = str(self.gpu_sensor.get_Value())[:-2]
-        self.Hardware[1].Update()
-        return temperature
-
-    def get_str_gpu_temperature(self) -> str:
-        if self.gpu_sensor:
-            return "GPU - " + self.get_gpu_temperature() + "°C"
-        return "GPU - IGP"
-
-    def get_str_cpu_temperature(self) -> str:
-        if self.cpu_sensor:
-            return "CPU - " + self.get_cpu_temperature() + "°C"
-        return "CPU - None(?)"
+        return f"GPU - {self._gpu_component.get_temperature()}°C" if self._gpu_component.get_hardware() else "GPU - IGP"

@@ -1,6 +1,5 @@
 from __future__ import annotations
-from pywintypes import HANDLE as PyHANDLE
-from pywintypes import error as py_win_error
+from pywintypes import HANDLE as PyHANDLE, error as py_win_error
 from typing import TYPE_CHECKING
 import win32pipe
 import win32file

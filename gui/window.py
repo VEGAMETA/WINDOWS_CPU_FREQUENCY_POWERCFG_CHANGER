@@ -1,16 +1,12 @@
-from __future__ import annotations
-from typing import TYPE_CHECKING
-from gui.tray import Tray
+import time
+import threading
+import PySimpleGUI as Psg
 import utils.pipe as pipe
 import utils.frequency as freq
 import utils.wrappers as wrappers
-import PySimpleGUI as Psg
-import threading
-import time
-
-if TYPE_CHECKING:
-    from configparser import ConfigParser
-    from utils.hardware import MyComputer
+from gui.tray import Tray
+from configparser import ConfigParser
+from utils.hardware import MyComputer
 
 
 class MainWindow(Psg.Window):
@@ -28,8 +24,8 @@ class MainWindow(Psg.Window):
         self.computer: MyComputer = computer
         self.frequency: int = frequency
 
-        self.cpu_temperature: str = self.computer.get_str_cpu_temperature()
-        self.gpu_temperature: str = self.computer.get_str_gpu_temperature()
+        self.cpu_temperature: str = self.computer.get_cpu_temperature()
+        self.gpu_temperature: str = self.computer.get_gpu_temperature()
 
         self.slider: Psg.Slider = self.get_slider()
         self.text: Psg.Text = Psg.Text(self.get_updated_text())
@@ -103,8 +99,8 @@ class MainWindow(Psg.Window):
     def update_temperature(self) -> None:
         while True:
             time.sleep(1)
-            self.cpu_temperature = self.computer.get_str_cpu_temperature()
-            self.gpu_temperature = self.computer.get_str_gpu_temperature()
+            self.cpu_temperature = self.computer.get_cpu_temperature()
+            self.gpu_temperature = self.computer.get_gpu_temperature()
             self.tray.set_tooltip(self.get_tray_tooltip())
             self.text.update(self.get_updated_text())
 
