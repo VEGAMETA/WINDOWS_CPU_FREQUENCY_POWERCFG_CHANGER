@@ -1,14 +1,25 @@
 import sys
+import pyuac
+
+
+def check_uac(func):
+    def running_as_admin(*args, **kwargs):
+        if pyuac.isUserAdmin():
+            func(*args, **kwargs)
+        else:
+            pyuac.runAsAdmin()
+
+    return running_as_admin
 
 
 def no_debug(func):
-    def wrapper(*args, **kwargs):
+    def exit_on_exception(*args, **kwargs):
         try:
             func(*args, **kwargs)
         except:
             sys.exit(0)
 
-    return wrapper
+    return exit_on_exception
 
 
 def singleton(cls):
