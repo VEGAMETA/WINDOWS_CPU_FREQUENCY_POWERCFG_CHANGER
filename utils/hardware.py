@@ -43,8 +43,7 @@ class MyComputer(Computer):
             if hasattr(hardware, "Sensors"):
                 if hardware.HardwareType == HardwareType.CPU:
                     self._cpu_component.hardware = hardware
-                    continue
-                if hardware.HardwareType in (HardwareType.GpuAti, HardwareType.GpuNvidia):
+                elif hardware.HardwareType in (HardwareType.GpuAti, HardwareType.GpuNvidia):
                     self._gpu_component.hardware = hardware
 
     def _set_components_temperature_sensors(self) -> None:
@@ -52,13 +51,7 @@ class MyComputer(Computer):
         self._gpu_component.set_temperature_sensor() if self._gpu_component.hardware else ...
 
     def get_cpu_temperature(self) -> str:
-        if self._cpu_component.temperature_sensor:
-            return f"CPU - {self._cpu_component.get_temperature()}°C"
-        else:
-            return "CPU - ERR"
+        return f"CPU - {self._cpu_component.get_temperature()}°C" if self._cpu_component.hardware else "CPU - ERR"
 
     def get_gpu_temperature(self) -> str:
-        if self._gpu_component.temperature_sensor:
-            return f"GPU - {self._gpu_component.get_temperature()}°C"
-        else:
-            return "GPU - IGP"
+        return f"GPU - {self._gpu_component.get_temperature()}°C" if self._gpu_component.hardware else "GPU - IGP"
