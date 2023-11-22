@@ -17,7 +17,7 @@
 - UAC admin rights accessibility
 
 ## Installation
-
+###### (Make sure Python is in your system PATH environment variable)
 Default installation:
 
 ```bat
@@ -85,5 +85,5 @@ sc stop WinRing0_1_2_0
 
 #
 
-###### Use at your own risk, the programmer is not responsible
+###### Use at your own risk, the developer is not responsible.
 
